@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>프로필</title>
+</head>
+<body>
+  {% include '_nav.html' %}
+  <h1>나의 취미</h1>
+  <ul>
+    {% for hobby in hobbies %}
+    <li>{{ hobby }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
