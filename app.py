@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for
+from flask import Flask, request, url_for, render_template
 
 app = Flask(__name__)
 
@@ -11,12 +11,32 @@ def about():
   return '소개 페이지'
 
 @app.route('/user/<username>')
-def profile(username):
-  return f'{username} 님의 프로필'
+def user_profile(username):
+  return render_template('profile.html',
+                         username=username,
+                         posts=['첫 글', '두 번째 글'])
+
+@app.route('/newuser/<username>')
+def new_user(username):
+  return render_template('profile.html',
+                         username=username,
+                         posts=[])
 
 @app.route('/post/<int:pid>')
 def post(pid):
   return f'{pid}번 글 (자료형: {type(pid).__name__})'
+
+@app.route("/age/<num>")            # 타입 없음
+def age_any(num):
+  return f"<h1>{num} 살 — 타입은 {type(num).__name__}</h1>"
+
+@app.route("/age2/<int:num>")       # 정수만
+def age_int(num):
+  return f"<h1>{num} 살 — 타입은 {type(num).__name__}</h1>"
+
+@app.route("/hi/<name>")
+def hi_template_render(name):
+  return render_template("hi.html", name=name)
 
 @app.route("/test/<uuid:text>")
 def route_sample(text) :
