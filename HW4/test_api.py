@@ -41,3 +41,17 @@ class TodoApiTest(unittest.TestCase):
         made = self.client.post("/api/todos/", json={"text": "지울 것"}).get_json()
         self.assertEqual(self.client.delete(f"/api/todos/{made['id']}").status_code, 204)
         self.assertEqual(self.client.get(f"/api/todos/{made['id']}").status_code, 404)
+
+    def test_note_를_보내면_그대로_오고_안_보내면_빈_글자다(self):
+        r = self.client.post("/api/todos/", json={"text": "우유 사기", "note": "2리터짜리로"})
+        self.assertEqual(r.get_json()["note"], "2리터짜리로")
+        r = self.client.post("/api/todos/", json={"text": "책 반납"})
+        self.assertEqual(r.get_json()["note"], "")
+
+    def test_done_으로_걸러_받는다(self):
+        self.client.post("/api/todos/", json={"text": "우유 사기", "done": True})
+        self.client.post("/api/todos/", json={"text": "책 반납"})
+        done = self.client.get("/api/todos/?done=true").get_json()
+        todo = self.client.get("/api/todos/?done=false").get_json()
+        self.assertEqual([t["text"] for t in done], ["우유 사기"])
+        self.assertEqual([t["text"] for t in todo], ["책 반납"])
